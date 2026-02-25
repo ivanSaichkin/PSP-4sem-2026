@@ -1,0 +1,163 @@
+.my-btn { 
+  margin-right: 5px;           /* задаем отступ от кнопки справа */
+  margin-top: 5px;             /* задаем отступ от кнопки сверху*/
+  width: 50px;                 /* задаем ширину кнопки */
+  height: 50px;                /* задаем высоту кнопки */
+  border-radius: 25%;          /* округляем кнопку */
+  border: none;                /* отключаем обводку */
+  background: #ffb319;         /* задаем серый цвет кнопки */
+  color: white;                /* задаем белый цвет текста внутри кнопки */
+  font-size: 1.5rem;           /* увеличим размер шрифта */
+  font-family: Arial, Helvetica, sans-serif; /* сменим шрифт */
+  font-weight: 100;
+  cursor: pointer;             /* при наведении на кнопку курсор будет изменен
+                                  со стрелки на 'указательный палец' */
+  user-select: none;           /* отключаем возможность выделить текст внутри кнопки */
+} 
+
+.my-btn:hover {
+  background: #c28408; 
+}
+
+
+.my-btn:active {
+  filter: brightness(130%);
+}
+
+.my-btn.numbers {
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: 800;
+}
+
+
+.my-btn.primary { 
+  background: #5f5f5f;
+}
+
+
+.my-btn.secondary { 
+  background: #5f5f5f;
+}
+
+.my-btn.primary.execute { 
+  width: 110px;          
+  border-radius: 14px;  
+}
+
+.result { 
+  width: 220px;
+  height: 50px;
+  margin-bottom: 15px;        
+  padding-right: 10px;     
+  background: rgb(8, 90, 0);
+  text-align: right;         
+  color: #ffffff;      
+  font-size: 1.5rem;
+  font-family: Arial, Helvetica, sans-serif;
+  border-radius: 5px;
+}
+
+.calculator {
+    width: 235px;
+    background-color: #6fb600;
+    padding-left: 20px;
+    padding-right: 15px;
+    padding-bottom: 15px;
+    padding-top: 20px;
+    border-radius: 10px;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    min-height: 100vh;
+    background-image: url('images/background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.site-header {
+    width: 100%;
+    background-color: transparent; 
+    backdrop-filter: blur(6px);   
+    box-sizing: border-box;
+    position: fixed;             
+    top: 0;
+    left: 0;
+    z-index: 100;
+}
+
+.site-header nav {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.site-header nav a {
+    color: #ffffff;
+    text-decoration: none;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    transition: color 0.2s;
+    line-height: 28px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.site-header nav a:hover {
+    color: #6360f1;
+}
+
+.content {
+    flex: 1;                 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Футер */
+.site-footer {
+    width: 100%;
+    padding: 15px 30px;
+    background-color: #6fb600;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.site-footer p {
+    margin: 0;
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.03em;
+}
+
+.icon-btn {
+    background: none;       
+    border: none;          
+    padding: 0;              
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.nav-icon {
+    width: 120px;             
+    height: 120px;
+    object-fit: contain;
+    transition: transform 0.2s, filter 0.2s;
+    filter: brightness(1);
+}
+
+.icon-btn:hover .nav-icon {
+    transform: scale(1.15);          
+    filter: brightness(1.4);         
+}
