@@ -97,7 +97,7 @@ body {
 .site-header nav {
     display: flex;
     align-items: center;
-    gap: 25px;
+    gap: 20px;
 }
 
 .site-header nav a {
@@ -150,8 +150,8 @@ body {
 }
 
 .nav-icon {
-    width: 120px;             
-    height: 120px;
+    width: 100px;
+    height: 100px;
     object-fit: contain;
     transition: transform 0.2s, filter 0.2s;
     filter: brightness(1);
@@ -160,4 +160,59 @@ body {
 .icon-btn:hover .nav-icon {
     transform: scale(1.15);          
     filter: brightness(1.4);         
+}
+
+.contacts {
+    background: #ffb319;
+    text-align: center;
+    padding: 50px 20px;
+    max-width: 400px;
+    margin: 0 auto;
+    border-radius: 10px;
+}
+
+.avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-bottom: 20px;
+    object-fit: cover;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.contacts h1 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.contacts p {
+    font-size: 18px;
+    margin: 10px 0;
+    color: #666;
+}
+.social-icon-btn {
+    border-radius: 50% ; 
+    width: 60px;
+    height: 60px;
+    margin: 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.social-icon-btn:hover {
+    transform: scale(1.15) ;
+}
+.social-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 30px;
+    border-radius: 10px;
+}
+
+.social-icon-btn .nav-icon {
+    width: 60px ;
+    height: 60px ;
+    border-radius: 50%
 }
