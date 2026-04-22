@@ -97,15 +97,15 @@ export class MainPage {
     render() {
         this.parent.innerHTML = '';
         this.parent.insertAdjacentHTML('beforeend', this.getHTML());
-        
+
         const container = document.getElementById('ingredients-container');
         const data = this.getData();
-        
+
         data.forEach((item) => {
             const productCard = new ProductCardComponent(container);
             productCard.render(item, this.clickCard.bind(this));
         });
-        
+
         // Добавляем обработчики для кнопок
         const prevBtn = document.querySelector('.nav-btn.prev');
         const nextBtn = document.querySelector('.nav-btn.next');
