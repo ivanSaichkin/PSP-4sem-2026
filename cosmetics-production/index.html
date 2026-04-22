@@ -2,8 +2,79 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>IQ Cosmetics - Ингредиенты</title>
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            overflow-x: hidden;
+        }
+        
+        /* Стили для 3D контейнера */
+        #product-3d-section canvas {
+            width: 100% !important;
+            height: 100% !important;
+            display: block;
+        }
+        
+        /* Кастомный скроллбар для горизонтальной прокрутки */
+        #ingredients-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        #ingredients-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+        
+        #ingredients-container::-webkit-scrollbar-thumb {
+            background: #ffb319;
+            border-radius: 10px;
+        }
+        
+        #ingredients-container::-webkit-scrollbar-thumb:hover {
+            background: #e69d00;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            #product-page > div > div {
+                flex-direction: column !important;
+            }
+            
+            #product-3d-section {
+                flex: 0 0 100% !important;
+                max-width: 100% !important;
+                min-height: 400px !important;
+            }
+            
+            .nav-btn {
+                width: 35px !important;
+                height: 35px !important;
+            }
+            
+            .nav-btn svg {
+                width: 20px !important;
+                height: 20px !important;
+            }
+        }
+    </style>
 </head>
 <body>
     <div id="root"></div>

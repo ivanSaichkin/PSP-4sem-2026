@@ -1,6 +1,10 @@
+// components/product/index.js
+import { ThreeDViewerComponent } from "../3d-viewer/index.js";
+
 export class ProductComponent {
     constructor(parent) {
         this.parent = parent;
+        this.viewer3d = null;
     }
 
     getHTML(data) {
@@ -15,10 +19,10 @@ export class ProductComponent {
         return `
             <div style="background: rgba(255, 255, 255, 0.95); border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);">
                 <div style="margin: 0; display: flex; flex-wrap: wrap;">
-                    <div style="flex: 0 0 41.666%; max-width: 41.666%;">
-                        <img src="${data.src}" style="width: 100%; height: 100%; object-fit: cover; min-height: 300px;" alt="${data.title}">
+                    <div id="product-3d-section" style="flex: 0 0 50%; max-width: 50%; min-height: 500px;">
+                        <!-- 3D viewer будет вставлен сюда -->
                     </div>
-                    <div style="flex: 0 0 58.333%; max-width: 58.333%;">
+                    <div style="flex: 0 0 50%; max-width: 50%;">
                         <div style="padding: 30px;">
                             <h5 style="font-size: 2rem; margin-bottom: 20px; color: #6fb600;">${data.title}</h5>
                             <p style="font-size: 1.1rem; line-height: 1.6; color: #444; margin-bottom: 20px;">${data.text}</p>
@@ -51,5 +55,12 @@ export class ProductComponent {
     render(data) {
         const html = this.getHTML(data);
         this.parent.insertAdjacentHTML('beforeend', html);
+        
+        // Инициализация 3D просмотрщика
+        const container3d = document.getElementById('product-3d-section');
+        if (container3d && data.model3d) {
+            this.viewer3d = new ThreeDViewerComponent(container3d);
+            this.viewer3d.render(data.model3d);
+        }
     }
 }

@@ -1,3 +1,4 @@
+// main.js
 import { MainPage } from "./pages/main/index.js";
 import { ContactsPage } from "./pages/contacts/index.js";
 
