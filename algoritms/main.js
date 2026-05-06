@@ -2,9 +2,7 @@ const readline = require('readline');
 const task1 = require('./task1');
 const task2 = require('./task2');
 
-/**
- * Создание интерфейса для чтения ввода
- */
+
 function createRL() {
     return readline.createInterface({
         input: process.stdin,
@@ -12,9 +10,6 @@ function createRL() {
     });
 }
 
-/**
- * Отображение главного меню
- */
 function showMainMenu() {
     console.log('\n' + '='.repeat(50));
     console.log('        РЕШЕНИЕ ЗАДАЧ 2.10 и 3.3');
@@ -26,9 +21,7 @@ function showMainMenu() {
     console.log('='.repeat(50));
 }
 
-/**
- * Запуск интерактивного режима для выбранного задания
- */
+
 function runInteractive(choice) {
     const rl = createRL();
     
@@ -48,9 +41,6 @@ function runInteractive(choice) {
     }
 }
 
-/**
- * Запуск всех тестов
- */
 function runAllTests() {
     console.log('\n' + '='.repeat(50));
     console.log('ЗАПУСК ВСЕХ ТЕСТОВ');
@@ -71,9 +61,6 @@ function runAllTests() {
     });
 }
 
-/**
- * Главная функция запуска
- */
 function start() {
     const rl = createRL();
     
