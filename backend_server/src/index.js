@@ -12,34 +12,48 @@ const DATA_FILE_PATH = path.join(__dirname, 'data/ingredients.json');
 // Инициализируем сервис с путем к файлу данных
 ingredientsService.init(DATA_FILE_PATH);
 
-// 1. Встроенный middleware для парсинга JSON
+// Middleware для парсинга JSON
 app.use(express.json());
 
-// 2. Логирующий middleware
+// Статическая раздача изображений (если нужно)
+app.use('/images', express.static(path.join(__dirname, 'public/images')));
+
+// Логирующий middleware
 app.use((req, res, next) => {
     console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
     next();
 });
 
-// 3. Подключение маршрутов с префиксом /api
+// Подключение маршрутов
 app.use('/api/ingredients', ingredientsRouter);
 
-// 4. Корневой маршрут
+// Корневой маршрут
 app.get('/', (req, res) => {
     res.json({
         name: 'Cosmetics Components API',
         version: '1.0.0',
+        description: 'API для управления компонентами косметического производства',
         endpoints: {
             'GET /api/ingredients': 'Получить все ингредиенты',
+            'GET /api/ingredients?category=Увлажнители': 'Фильтрация по категории',
+            'GET /api/ingredients?title=Гиалуроновая': 'Поиск по названию',
             'GET /api/ingredients/:id': 'Получить ингредиент по ID',
             'POST /api/ingredients': 'Создать новый ингредиент',
             'PATCH /api/ingredients/:id': 'Обновить ингредиент',
             'DELETE /api/ingredients/:id': 'Удалить ингредиент'
+        },
+        example_data: {
+            id: 1,
+            src: "images/ingredient1.jpg",
+            title: "Гиалуроновая кислота",
+            text: "Мощный увлажнитель...",
+            benefits: ["Увлажнение", "Anti-age", "Безопасно"],
+            category: "Увлажнители"
         }
     });
 });
 
-// 5. Глобальная обработка 404
+// Глобальная обработка 404
 app.use((req, res) => {
     res.status(404).json({ 
         success: false, 
@@ -47,7 +61,7 @@ app.use((req, res) => {
     });
 });
 
-// 6. Error handler middleware
+// Error handler
 app.use((err, req, res, next) => {
     console.error('Ошибка сервера:', err);
     res.status(500).json({ 
@@ -56,19 +70,23 @@ app.use((err, req, res, next) => {
     });
 });
 
-// 7. Запуск сервера
+// Запуск сервера
 app.listen(PORT, () => {
     console.log(`
-    ╔══════════════════════════════════════════════════╗
-    ║     🧪 Cosmetics Components API запущен!        ║
-    ╠══════════════════════════════════════════════════╣
-    ║  Локальный адрес: http://localhost:${PORT}        ║
-    ║  API endpoints:                                  ║
-    ║  • GET    /api/ingredients                       ║
-    ║  • GET    /api/ingredients/:id                   ║
-    ║  • POST   /api/ingredients                       ║
-    ║  • PATCH  /api/ingredients/:id                   ║
-    ║  • DELETE /api/ingredients/:id                   ║
-    ╚══════════════════════════════════════════════════╝
+    ╔════════════════════════════════════════════════════════════╗
+    ║        🧪 Cosmetics Components API запущен!               ║
+    ╠════════════════════════════════════════════════════════════╣
+    ║  Локальный адрес: http://localhost:${PORT}                  ║
+    ║                                                           ║
+    ║  📋 Формат данных:                                         ║
+    ║  {                                                        ║
+    ║    "id": 1,                                               ║
+    ║    "src": "images/ingredient1.jpg",                       ║
+    ║    "title": "Гиалуроновая кислота",                       ║
+    ║    "text": "Мощный увлажнитель...",                       ║
+    ║    "benefits": ["Увлажнение", "Anti-age"],                ║
+    ║    "category": "Увлажнители"                              ║
+    ║  }                                                        ║
+    ╚════════════════════════════════════════════════════════════╝
     `);
 });

@@ -1,8 +1,9 @@
 const ingredientsService = require('../services/ingredientsService');
 
+// Получение всех ингредиентов
 const getAllIngredients = (req, res) => {
-    const { category, name } = req.query;
-    const ingredients = ingredientsService.findAll(category, name);
+    const { category, title } = req.query;
+    const ingredients = ingredientsService.findAll(category, title);
     res.json({
         success: true,
         count: ingredients.length,
@@ -10,6 +11,7 @@ const getAllIngredients = (req, res) => {
     });
 };
 
+// Получение ингредиента по ID
 const getIngredientById = (req, res) => {
     const id = parseInt(req.params.id);
     const ingredient = ingredientsService.findOne(id);
@@ -27,24 +29,30 @@ const getIngredientById = (req, res) => {
     });
 };
 
+// Создание нового ингредиента
 const createIngredient = (req, res) => {
-    const { name, category, description, benefits, concentration, skinTypes, precautions } = req.body;
+    const { src, title, text, benefits, category } = req.body;
     
-    if (!name || !category || !description) {
+    // Валидация обязательных полей
+    if (!title || !text || !category) {
         return res.status(400).json({ 
             success: false, 
-            error: 'Обязательные поля: name, category, description' 
+            error: 'Обязательные поля: title, text, category' 
         });
     }
     
+    // Проверка что benefits - массив
+    let benefitsArray = benefits;
+    if (benefits && !Array.isArray(benefits)) {
+        benefitsArray = [benefits];
+    }
+    
     const newIngredient = ingredientsService.create({ 
-        name, 
-        category, 
-        description, 
-        benefits: benefits || '',
-        concentration: concentration || 'Не указано',
-        skinTypes: skinTypes || [],
-        precautions: precautions || 'Не указаны'
+        src: src || 'images/default.jpg',
+        title, 
+        text,
+        benefits: benefitsArray || [],
+        category
     });
     
     res.status(201).json({
@@ -54,8 +62,15 @@ const createIngredient = (req, res) => {
     });
 };
 
+// Обновление ингредиента
 const updateIngredient = (req, res) => {
     const id = parseInt(req.params.id);
+    
+    // Если benefits приходит не массивом, преобразуем
+    if (req.body.benefits && !Array.isArray(req.body.benefits)) {
+        req.body.benefits = [req.body.benefits];
+    }
+    
     const updatedIngredient = ingredientsService.update(id, req.body);
     
     if (!updatedIngredient) {
@@ -72,6 +87,7 @@ const updateIngredient = (req, res) => {
     });
 };
 
+// Удаление ингредиента
 const deleteIngredient = (req, res) => {
     const id = parseInt(req.params.id);
     const success = ingredientsService.remove(id);
