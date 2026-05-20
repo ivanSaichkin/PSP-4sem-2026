@@ -1,101 +1,75 @@
-import { ThreeDViewerComponent } from "../3d-viewer/index.js";
-import { ajax } from "../../modules/ajax.js";
-import { stockUrls } from "../../modules/stockUrls.js";
-
+// components/product/index.js
 export class ProductComponent {
     constructor(parent) {
         this.parent = parent;
-        this.viewer3d = null;
     }
 
-    getHTML(data, id, pageContext) {
-        const benefitsBadges = data.benefits ? data.benefits.map(benefit => 
-            `<span style="font-size: 0.9rem; padding: 5px 10px; border-radius: 20px; background-color: #28a745; color: white; margin-right: 8px;">✓ ${benefit}</span>`
-        ).join('') : '';
+    getHTML(data) {
+        const benefitsBadges = (data.benefits || []).map(benefit => 
+            `<span style="font-size: 0.9rem; padding: 5px 10px; border-radius: 20px; display: inline-block; background-color: #28a745; color: white; margin-right: 8px; margin-bottom: 8px;">✓ ${benefit}</span>`
+        ).join('');
         
         return `
-            <div id="product-view">
-                <div style="background: rgba(255, 255, 255, 0.95); border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);">
-                    <div style="display: flex; flex-wrap: wrap;">
-                        <div id="product-3d-section" style="flex: 0 0 50%; min-height: 500px;"></div>
-                        <div style="flex: 0 0 50%; padding: 30px;">
-                            <div id="display-mode">
-                                <h5 style="font-size: 2rem; color: #6fb600;" id="display-title">${data.name}</h5>
-                                <p id="display-description" style="font-size: 1.1rem; color: #444;">${data.description}</p>
-                                <p><strong>Категория:</strong> <span id="display-category">${data.category}</span></p>
-                                <p><strong>Преимущества:</strong> <span id="display-benefits">${benefitsBadges}</span></p>
-                                <p><strong>Концентрация:</strong> <span id="display-concentration">${data.concentration}</span></p>
-                                <button id="edit-btn" style="background-color: #ffb319; border: none; padding: 10px 25px; border-radius: 25px; margin-top: 15px; cursor: pointer;">✏️ Редактировать</button>
+            <div style="background: rgba(255, 255, 255, 0.95); border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);">
+                <div style="margin: 0; display: flex; flex-wrap: wrap;">
+                    <div style="flex: 0 0 100%; max-width: 100%;">
+                        <div style="padding: 30px;">
+                            <div style="text-align: center; margin-bottom: 20px;">
+                                <img style="max-width: 300px; width: 100%; border-radius: 15px;" src="${data.src || 'images/default.jpg'}" alt="${data.title}">
                             </div>
-                            <div id="edit-mode" style="display: none;">
-                                <h3>Редактирование</h3>
-                                <input type="text" id="edit-name" value="${data.name}" placeholder="Название" style="width: 100%; padding: 8px; margin-bottom: 10px;">
-                                <input type="text" id="edit-category" value="${data.category}" placeholder="Категория" style="width: 100%; padding: 8px; margin-bottom: 10px;">
-                                <textarea id="edit-description" placeholder="Описание" style="width: 100%; padding: 8px; margin-bottom: 10px;">${data.description}</textarea>
-                                <input type="text" id="edit-concentration" value="${data.concentration}" placeholder="Концентрация" style="width: 100%; padding: 8px; margin-bottom: 10px;">
-                                <button id="save-btn" style="background-color: #28a745; color: white; border: none; padding: 10px 25px; border-radius: 25px; margin-right: 10px; cursor: pointer;">💾 Сохранить</button>
-                                <button id="cancel-btn" style="background-color: #dc3545; color: white; border: none; padding: 10px 25px; border-radius: 25px; cursor: pointer;">❌ Отмена</button>
+                            <h5 style="font-size: 2rem; margin-bottom: 20px; color: #6fb600;">${data.title}</h5>
+                            <div style="margin-bottom: 15px;">
+                                <span style="font-size: 1rem; padding: 5px 15px; border-radius: 20px; display: inline-block; background-color: #17a2b8; color: white;">${data.category}</span>
+                            </div>
+                            <p style="font-size: 1.1rem; line-height: 1.6; color: #444; margin-bottom: 20px;">${data.text}</p>
+                            
+                            <div style="margin-top: 15px;">
+                                <h6 style="font-weight: bold;">Преимущества:</h6>
+                                <div style="margin-bottom: 15px; display: flex; flex-wrap: wrap;">
+                                    ${benefitsBadges || 'Не указаны'}
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            
+            <!-- Кнопки управления -->
+            <div style="display: flex; gap: 15px; margin-top: 20px; justify-content: center;">
+                <button id="delete-ingredient" style="background-color: #dc3545; border: none; color: white; font-weight: bold; padding: 12px 25px; border-radius: 25px; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.backgroundColor='#c82333'" onmouseout="this.style.backgroundColor='#dc3545'">🗑️ Удалить ингредиент</button>
+            </div>
+            
+            <!-- Форма обновления -->
+            <div style="margin-top: 30px; padding: 25px; background: #f8f9fa; border-radius: 20px;">
+                <h6 style="font-weight: bold; margin-bottom: 20px;">✏️ Редактировать ингредиент</h6>
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <input type="text" id="edit-title" placeholder="Название" value="${data.title}" style="padding: 12px; border: 2px solid #ddd; border-radius: 10px;">
+                    <input type="text" id="edit-category" placeholder="Категория" value="${data.category}" style="padding: 12px; border: 2px solid #ddd; border-radius: 10px;">
+                    <textarea id="edit-text" placeholder="Описание" rows="4" style="padding: 12px; border: 2px solid #ddd; border-radius: 10px;">${data.text}</textarea>
+                    <input type="text" id="edit-benefits" placeholder="Преимущества (через запятую)" value="${(data.benefits || []).join(', ')}" style="padding: 12px; border: 2px solid #ddd; border-radius: 10px;">
+                    <input type="text" id="edit-src" placeholder="URL изображения" value="${data.src || ''}" style="padding: 12px; border: 2px solid #ddd; border-radius: 10px;">
+                    <button id="update-ingredient" style="background-color: #28a745; border: none; color: white; font-weight: bold; padding: 12px; border-radius: 25px; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.backgroundColor='#218838'" onmouseout="this.style.backgroundColor='#28a745'">💾 Сохранить изменения</button>
+                </div>
+            </div>
         `;
     }
 
-    attachEditListeners(data, id, pageContext) {
-        const editBtn = document.getElementById('edit-btn');
-        const saveBtn = document.getElementById('save-btn');
-        const cancelBtn = document.getElementById('cancel-btn');
-        const displayMode = document.getElementById('display-mode');
-        const editMode = document.getElementById('edit-mode');
-
-        if (editBtn) {
-            editBtn.addEventListener('click', () => {
-                displayMode.style.display = 'none';
-                editMode.style.display = 'block';
-            });
-        }
-
-        if (cancelBtn) {
-            cancelBtn.addEventListener('click', () => {
-                displayMode.style.display = 'block';
-                editMode.style.display = 'none';
-            });
-        }
-
-        if (saveBtn) {
-            saveBtn.addEventListener('click', () => {
-                const updatedData = {
-                    name: document.getElementById('edit-name').value,
-                    category: document.getElementById('edit-category').value,
-                    description: document.getElementById('edit-description').value,
-                    concentration: document.getElementById('edit-concentration').value
-                };
-
-                ajax.patch(stockUrls.updateStockById(id), updatedData, (response, status) => {
-                    if (response && response.success) {
-                        alert('✅ Ингредиент успешно обновлён!');
-                        // Обновляем страницу
-                        pageContext.getData();
-                    } else {
-                        alert('❌ Ошибка при обновлении');
-                    }
-                });
-            });
-        }
-    }
-
-    render(data, id, pageContext) {
-        const html = this.getHTML(data, id, pageContext);
+    render(data, deleteListener, updateListener) {
+        const html = this.getHTML(data);
         this.parent.insertAdjacentHTML('beforeend', html);
         
-        this.attachEditListeners(data, id, pageContext);
-
-        const container3d = document.getElementById('product-3d-section');
-        if (container3d && data.model3d) {
-            this.viewer3d = new ThreeDViewerComponent(container3d);
-            this.viewer3d.render(data.model3d);
+        const deleteBtn = document.getElementById('delete-ingredient');
+        if (deleteBtn) {
+            const newDeleteBtn = deleteBtn.cloneNode(true);
+            deleteBtn.parentNode.replaceChild(newDeleteBtn, deleteBtn);
+            newDeleteBtn.addEventListener('click', deleteListener);
+        }
+        
+        const updateBtn = document.getElementById('update-ingredient');
+        if (updateBtn) {
+            const newUpdateBtn = updateBtn.cloneNode(true);
+            updateBtn.parentNode.replaceChild(newUpdateBtn, updateBtn);
+            newUpdateBtn.addEventListener('click', updateListener);
         }
     }
 }

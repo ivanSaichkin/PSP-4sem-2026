@@ -1,27 +1,28 @@
-class StockUrls {
+// modules/ingredientUrls.js
+export class IngredientUrls {
     constructor() {
         this.baseUrl = 'http://localhost:3000';
     }
 
-    getStocks() {
+    getIngredients() {
         return `${this.baseUrl}/api/ingredients`;
     }
 
-    getStockById(id) {
+    getIngredientById(id) {
         return `${this.baseUrl}/api/ingredients/${id}`;
     }
 
-    createStock() {
+    createIngredient() {
         return `${this.baseUrl}/api/ingredients`;
     }
 
-    removeStockById(id) {
+    deleteIngredientById(id) {
         return `${this.baseUrl}/api/ingredients/${id}`;
     }
 
-    updateStockById(id) {
+    updateIngredientById(id) {
         return `${this.baseUrl}/api/ingredients/${id}`;
     }
 }
 
-export const stockUrls = new StockUrls();
+export const ingredientUrls = new IngredientUrls();

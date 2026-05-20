@@ -1,20 +1,9 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="ru">
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>IQ Cosmetics - Ингредиенты</title>
-    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
-    
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-            }
-        }
-    </script>
-    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmetics Ingredients - База компонентов для косметики</title>
     <style>
         * {
             margin: 0;
@@ -23,62 +12,89 @@
         }
         
         body {
-            overflow-x: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            min-height: 100vh;
         }
         
-        /* Стили для 3D контейнера */
-        #product-3d-section canvas {
-            width: 100% !important;
-            height: 100% !important;
-            display: block;
+        header {
+            background: linear-gradient(135deg, #6fb600 0%, #4a8f00 100%);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
         
-        /* Кастомный скроллбар для горизонтальной прокрутки */
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+        }
+        
+        header p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        footer {
+            background-color: #343a40;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+        
+        /* Скрываем скроллбар для container с карточками */
         #ingredients-container::-webkit-scrollbar {
-            height: 8px;
+            display: none;
         }
         
-        #ingredients-container::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-        }
-        
-        #ingredients-container::-webkit-scrollbar-thumb {
-            background: #ffb319;
-            border-radius: 10px;
-        }
-        
-        #ingredients-container::-webkit-scrollbar-thumb:hover {
-            background: #e69d00;
-        }
-        
-        /* Адаптивность */
         @media (max-width: 768px) {
-            #product-page > div > div {
-                flex-direction: column !important;
+            main {
+                padding: 20px;
             }
             
-            #product-3d-section {
-                flex: 0 0 100% !important;
-                max-width: 100% !important;
-                min-height: 400px !important;
+            header h1 {
+                font-size: 1.8rem;
             }
             
-            .nav-btn {
-                width: 35px !important;
-                height: 35px !important;
+            .nav-btn.prev {
+                left: -10px !important;
             }
             
-            .nav-btn svg {
-                width: 20px !important;
-                height: 20px !important;
+            .nav-btn.next {
+                right: -10px !important;
             }
         }
     </style>
 </head>
 <body>
-    <div id="root"></div>
-    <script src="main.js" type="module"></script>
-    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <header>
+        <h1>🧪 Cosmetics Ingredients</h1>
+        <p>База знаний о компонентах для производства косметики</p>
+    </header>
+    
+    <main id="app">
+        <div style="text-align: center; padding: 50px;">
+            <div class="loader">Загрузка...</div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2024 Cosmetics Ingredients - База компонентов для производства косметики</p>
+    </footer>
+    
+    <script type="module">
+        import { MainPage } from './pages/main/index.js';
+        
+        const app = document.getElementById('app');
+        const mainPage = new MainPage(app);
+        mainPage.render();
+    </script>
 </body>
 </html>
