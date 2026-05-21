@@ -171,4 +171,261 @@ images/github-icon.png	Иконка GitHub
 
 - Применены CSS-псевдоклассы для улучшения пользовательского опыта
 
-Обеспечено корректное отображение фона на разных устройствах
+- Обеспечено корректное отображение фона на разных устройствах
+
+
+# Отчёт по лабораторной работе №2
+
+## Тема работы
+Реализация логики работы веб-калькулятора на JavaScript
+
+## Цель работы
+Изучить основы программирования на JavaScript: работа с DOM-элементами, обработка событий, реализация арифметических операций, управление состоянием приложения, обработка специальных функций (смена знака, проценты).
+
+---
+
+## 1. Общая структура JavaScript-кода
+
+### 1.1 Основные переменные состояния
+
+```javascript
+let a = ''              // Первое число (до выбора операции)
+let b = ''              // Второе число (после выбора операции)
+let expressionResult = ''  // Результат вычисления
+let selectedOperation = null  // Выбранная операция (+, -, x, /)
+```
+## 1.2 DOM-элементы
+```javascript
+const outputElement = document.getElementById("result")  // Поле вывода результата
+const digitButtons = document.querySelectorAll('[id ^= "btn_digit_"]')  // Все цифровые кнопки
+```
+### 2. Функции вывода на экран
+## 2.1 Ограничение длины ввода
+Реализованы две функции для контроля отображения длинных чисел:
+
+Функция	Назначение
+- printToEnd(value)	Отображает последние 16 символов (обрезает слева)
+- printFromBegin(value)	Отображает первые 16 символов (обрезает справа)
+```javascript
+function printToEnd(value) {
+    outputElement.innerHTML = value.length > 16 ? value.slice(value.length - 16) : value;
+}
+
+function printFromBegin(value) {
+    outputElement.innerHTML = value.slice(0, 16)
+}
+```
+Назначение: предотвращает переполнение экрана калькулятора при вводе очень длинных чисел.
+
+### 3. Обработка ввода цифр и десятичной точки
+## 3.1 Функция onDigitButtonClicked(digit)
+Это ключевая функция, обрабатывающая нажатие на цифровые кнопки и точку.
+
+Логика работы:
+
+```javascript
+function onDigitButtonClicked(digit) {
+    // Если операция не выбрана — работаем с числом a
+    if (!selectedOperation) {
+        // Защита от процентов в a
+        if (a.includes('%')) return
+        
+        // Проверка на повторную точку
+        if ((digit != '.') || (digit == '.' && !a.includes(digit))) {
+            if (a == '' && digit == '.') {
+                a = '0';  // Автоматическая подстановка 0 перед точкой
+            }
+            a += digit;
+            printToEnd(a);
+        }
+    } 
+    // Если операция выбрана — работаем с числом b
+    else {
+        if (b.includes('%')) return
+        if ((digit != '.') || (digit == '.' && !b.includes(digit))) { 
+            if (b == '' && digit == '.') {
+                b = '0'
+            }
+            b += digit;
+            printToEnd(b);        
+        }
+    }
+}
+```
+# Особенности реализации:
+
+- Запрещает добавление цифр если число уже содержит знак %
+
+- Предотвращает ввод второй десятичной точки
+
+- Автоматически добавляет 0 перед точкой при пустом числе (например, .5 → 0.5)
+
+## 3.2 Назначение обработчиков цифровых кнопок
+```javascript
+digitButtons.forEach(button => {
+    button.onclick = function() {
+        const digitValue = button.innerHTML;
+        onDigitButtonClicked(digitValue);
+    }
+});
+```
+### 4. Обработка арифметических операций
+## 4.1 Выбор операции
+При нажатии на кнопку операции (+, -, x, /) выполняется проверка наличия первого числа и сохранение выбранной операции:
+
+```javascript
+document.getElementById("btn_op_plus").onclick = function() { 
+    if (a === '') return;  // Нельзя выбрать операцию без первого числа
+    selectedOperation = '+';
+}
+```
+Аналогично для остальных операций.
+
+## 4.2 Кнопка смены знака (±)
+Позволяет инвертировать знак текущего активного числа:
+
+```javascript
+document.getElementById("btn_op_sign").onclick = function() { 
+    if (!selectedOperation) {
+        // Меняем знак у числа a
+        if (a === '' || a === '0') return;
+        a = !a.includes('-') ? '-' + a : a.replace('-', '')
+        printFromBegin(a)
+    } else {
+        // Меняем знак у числа b
+        if (b === '' || b === '0') return;
+        b = !b.includes('-') ? '-' + b : b.replace('-', '')
+        printFromBegin(b)
+    }
+}
+```
+## 4.3 Кнопка процента (%)
+Добавляет специальную метку % к числу для последующей обработки:
+
+```javascript
+document.getElementById("btn_op_percent").onclick = function() { 
+    if (!selectedOperation) {
+        if (a === '' || a === '0') return;
+        if (!a.includes('%')) {
+            a += '%'  // Добавляем маркер процента
+        }
+        printToEnd(a)
+    } else {
+        if (b === '' || b === '0') return;
+        if (!b.includes('%')) {
+            b += '%'
+        }
+        printToEnd(b)
+    }
+}
+```
+## 4.4 Кнопка очистки (C)
+Сбрасывает всё состояние калькулятора:
+
+```javascript
+document.getElementById("btn_op_clear").onclick = function() { 
+    a = ''
+    b = ''
+    selectedOperation = ''
+    expressionResult = ''
+    outputElement.innerHTML = 0  // Отображаем 0 на экране
+}
+```
+### 5. Вычисление результата (кнопка =)
+## 5.1 Проверка условий
+Перед вычислением проверяется наличие обоих чисел и выбранной операции:
+
+```javascript
+if (a === '' || b === '' || !selectedOperation)
+    return
+```
+## 5.2 Обработка процентов
+Проценты обрабатываются по-разному в зависимости от операции:
+
+Операция	Обработка процента в b
+```
++ / -	b = b% * a * 0.01 (процент от числа a)
+x	b = b% * 0.01 (прямой перевод в десятичную дробь)
+/	b = b% * 0.01 (прямой перевод в десятичную дробь)
+```
+Пример реализации для сложения:
+
+```javascript
+case '+':
+    if (b.includes('%')) {
+        b = b.replace('%', '') * a * 0.01
+    }
+    expressionResult = (+a) + (+b)
+    break;
+```
+## 5.3 Выполнение операций (switch)
+```javascript
+switch(selectedOperation) { 
+    case 'x':
+        if (b.includes('%')) {
+            b = b.replace('%', '') * 0.01
+        }
+        expressionResult = (+a) * (+b)
+        break;
+    case '+':
+        if (b.includes('%')) {
+            b = b.replace('%', '') * a * 0.01
+        }
+        expressionResult = (+a) + (+b)
+        break;
+    case '-':
+        if (b.includes('%')) {
+            b = b.replace('%', '') * a * 0.01
+        }
+        expressionResult = (+a) - (+b)
+        break;
+    case '/':
+        if (b.includes('%')) {
+            b = b.replace('%', '') * 0.01
+        }
+        expressionResult = (+a) / (+b)
+        break;
+    default:
+        break;
+}
+```
+## 5.4 Сохранение результата
+После вычисления результат сохраняется в a (для продолжения вычислений), а b и selectedOperation сбрасываются:
+
+```javascript
+a = expressionResult.toString()
+b = ''
+selectedOperation = null
+outputElement.innerHTML = a
+```
+### 6. Блок-схема работы калькулятора
+```text
+[Старт]
+    │
+    ▼
+[Ожидание ввода пользователя]
+    │
+    ├──► [Нажатие цифры/точки] ──► [Добавление к a или b] ──► [Обновление экрана]
+    │
+    ├──► [Нажатие операции] ──► [Сохранение selectedOperation]
+    │
+    ├──► [Нажатие ±] ──► [Инверсия знака текущего числа] ──► [Обновление экрана]
+    │
+    ├──► [Нажатие %] ──► [Добавление маркера % к числу] ──► [Обновление экрана]
+    │
+    ├──► [Нажатие C] ──► [Сброс всех переменных] ──► [Отображение 0]
+    │
+    └──► [Нажатие =] ──► [Проверка наличия a, b, операции]
+                              │
+                              ▼
+                        [Обработка процентов]
+                              │
+                              ▼
+                        [Выполнение операции]
+                              │
+                              ▼
+                        [Сохранение результата в a]
+                              │
+                              ▼
+                        [Отображение результата]
+```
